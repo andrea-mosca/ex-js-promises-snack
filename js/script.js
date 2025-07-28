@@ -21,19 +21,45 @@
 //  Concatena una seconda chiamata che aggiunge una proprietà user
 // che contiene i dati dell'autore,
 //  recuperati dalla chiamata https://dummyjson.com/users/{post.userId}.
-function getPost(id) {
+// function getPost(id) {
+//   return new Promise((resolve, reject) => {
+//     fetch(`https://dummyjson.com/posts/${id}`)
+//       .then((response) => response.json())
+//       .then((post) => {
+//         fetch(`https://dummyjson.com/users/${post.userId}`)
+//           .then((response) => response.json())
+//           .then((user) => resolve({ ...post, user }))
+//           .catch(reject);
+//       })
+//       .catch(reject);
+//   });
+// }
+// getPost(1)
+//   .then((post) => console.log(post))
+//   .catch((error) => console.log(error));
+
+// * SNACK 2
+// Crea la funzione lanciaDado() che restituisce una Promise che,
+//  dopo 3 secondi, genera un numero casuale tra 1 e 6.
+// Tuttavia, nel 20% dei casi, il dado si "incastra"
+// e la Promise va in reject.
+
+function lanciaDado() {
   return new Promise((resolve, reject) => {
-    fetch(`https://dummyjson.com/posts/${id}`)
-      .then((response) => response.json())
-      .then((post) => {
-        fetch(`https://dummyjson.com/users/${post.userId}`)
-          .then((response) => response.json())
-          .then((user) => resolve({ ...post, user }))
-          .catch(reject);
-      })
-      .catch(reject);
+    console.log(`sto lanciando il dado...`);
+
+    setTimeout(() => {
+      const numero = Math.floor(Math.random() * 6) + 1;
+      const probabilitaIncastro = Math.random();
+      if (probabilitaIncastro < 0.2) {
+        reject(`il dado si è incastrato`);
+      } else {
+        resolve(`è uscito il numero: ${numero}`);
+      }
+    }, 3000);
   });
 }
-getPost(1)
-  .then((post) => console.log(post))
-  .catch((error) => console.log(error));
+
+lanciaDado()
+  .then((messaggio) => console.log(messaggio))
+  .catch((err) => console.error(err));
