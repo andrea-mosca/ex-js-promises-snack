@@ -44,22 +44,56 @@
 // Tuttavia, nel 20% dei casi, il dado si "incastra"
 // e la Promise va in reject.
 
-function lanciaDado() {
-  return new Promise((resolve, reject) => {
-    console.log(`sto lanciando il dado...`);
+// function lanciaDado() {
+//   return new Promise((resolve, reject) => {
+//     console.log(`sto lanciando il dado...`);
 
-    setTimeout(() => {
-      const numero = Math.floor(Math.random() * 6) + 1;
-      const probabilitaIncastro = Math.random();
-      if (probabilitaIncastro < 0.2) {
-        reject(`il dado si è incastrato`);
-      } else {
-        resolve(`è uscito il numero: ${numero}`);
-      }
-    }, 3000);
-  });
+//     setTimeout(() => {
+//       const numero = Math.floor(Math.random() * 6) + 1;
+//       const probabilitaIncastro = Math.random();
+//       if (probabilitaIncastro < 0.2) {
+//         reject(`il dado si è incastrato`);
+//       } else {
+//         resolve(`è uscito il numero: ${numero}`);
+//       }
+//     }, 3000);
+//   });
+// }
+
+// lanciaDado()
+//   .then((messaggio) => console.log(messaggio))
+//   .catch((err) => console.error(err));
+// BONUS
+// Modifica la funzione in creaLanciaDado(),
+// che restituisce una closure che memorizza l'ultimo risultato.
+//  Se il numero esce due volte di fila, stampa "Incredibile!".
+
+function creaLanciaDado() {
+  let ultimoLancio = null;
+  return function () {
+    return new Promise((resolve, reject) => {
+      console.log(`sto lanciando il dado...`);
+
+      setTimeout(() => {
+        const numero = Math.floor(Math.random() * 6) + 1;
+        const probabilitaIncastro = Math.random();
+        if (probabilitaIncastro < 0.2) {
+          ultimoLancio = null;
+          reject(`il dado si è incastrato`);
+        } else {
+          if (numero === ultimoLancio) {
+            console.log(`Incredibile!`);
+          }
+          ultimoLancio = numero;
+          resolve(`è uscito il numero: ${numero}`);
+        }
+      }, 3000);
+    });
+  };
 }
-
-lanciaDado()
-  .then((messaggio) => console.log(messaggio))
-  .catch((err) => console.error(err));
+const lanciaDado = creaLanciaDado();
+setInterval(() => {
+  lanciaDado()
+    .then((message) => console.log(message))
+    .catch((err) => console.error(err));
+}, 5000);
